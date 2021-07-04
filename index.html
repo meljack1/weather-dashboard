@@ -4,10 +4,93 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="./assets/css/style.css">
     <title>Weather Dashboard</title>
 </head>
 <body>
+    <header>
+        <h1>Weather Dashboard</h1>
+    </header>
+    <main class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <h2> Search for a City: </h2>
+                <form class="m-2">
+                    <label for="searchbar" class="form-label">Search for a city:</label>
+                    <input type="text" id="searchbar" class="form-control mb-2" placeholder="Search!">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </form>
+                <hr>
+                <div id="past-searches">
+
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div id="today-forecast" class="m-2 p-1 card">
+                    <div class="card-body">
+                        <h2 class="card-title">Birmingham <span data-attr="date">(04/07/2021)</span></h1>
+                        <p>Temp: <span data-attr="temperature"></span></p>
+                        <p>Wind: <span data-attr="wind"></span></p>
+                        <p>Humidity: <span data-attr="humidity"></span></p>
+                        <p>UV Index: <span class="badge" data-attr="uv"></span></p>
+                    </div>
+                </div>
+                <h2>5 day forecast</h2>
+                <div id="5-day-forecast" class="d-flex flex-column flex-md-row flex-wrap">                    
+                    <div class="card m-2 p-2">
+                        <div class="card-body">
+                            <h3 class="card-title">04/07/2021</h5>
+                            <p>Temp: <span data-attr="temperature"></span></p>
+                            <p>Wind: <span data-attr="wind"></span></p>
+                            <p>Humidity: <span data-attr="humidity"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="card m-2 p-1">
+                        <div class="card-body">
+                            <h3 class="card-title">05/07/2021</h5>
+                            <p>Temp: <span data-attr="temperature"></span></p>
+                            <p>Wind: <span data-attr="wind"></span></p>
+                            <p>Humidity: <span data-attr="humidity"></span></p>
+                        </div>
+                    </div>
+
+
+                    <div class="card m-2 p-1">
+                        <div class="card-body">
+                            <h3 class="card-title">06/07/2021</h5>
+                            <p>Temp: <span data-attr="temperature"></span></p>
+                            <p>Wind: <span data-attr="wind"></span></p>
+                            <p>Humidity: <span data-attr="humidity"></span></p>
+                        </div>
+                    </div>
+
+
+                    <div class="card m-2 p-1">
+                        <div class="card-body">
+                            <h3 class="card-title">07/07/2021</h5>
+                            <p>Temp: <span data-attr="temperature"></span></p>
+                            <p>Wind: <span data-attr="wind"></span></p>
+                            <p>Humidity: <span data-attr="humidity"></span></p>
+                        </div>
+                    </div>
+
+
+                    <div class="card m-2 p-1">
+                        <div class="card-body">
+                            <h3 class="card-title">08/07/2021</h5>
+                            <p>Temp: <span data-attr="temperature"></span></p>
+                            <p>Wind: <span data-attr="wind"></span></p>
+                            <p>Humidity: <span data-attr="humidity"></span></p>
+                        </div>
+                    </div>
+
+                </div>
+                
+            </div>
+        </div>
+    </main>
     <script src="./assets/js/script.js"></script>
 </body>
 </html>

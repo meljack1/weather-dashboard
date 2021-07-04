@@ -1,0 +1,15 @@
+body {
+    text-align: left;
+}
+
+h1 {
+    text-align: center;
+}
+
+.form-label {
+    display: none;
+}
+
+.btn-primary {
+    width: 100%;
+}
