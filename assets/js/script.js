@@ -97,7 +97,7 @@ function parse5DayWeatherData(data) {
         const day = getDayFromUnix(data.daily[i].dt)
         const date = getDateFromUnix(data.daily[i].dt);
         const icon = data.daily[i].weather[0].icon;
-        const temp = data.daily[i].temp.day;
+        const temp = Math.round(data.daily[i].temp.day);
         const wind = data.daily[i].wind_speed;
         const humidity = data.daily[i].humidity;
         fiveDays.push({day: day, date: date, icon: icon,  temp: temp, wind: wind, humidity: humidity});
@@ -109,7 +109,7 @@ function parse5DayWeatherData(data) {
 function updateCurrentForecast(data) {
     const date = getDateFromUnix(data.current.dt);
     const icon = data.current.weather[0].icon;
-    const temp = data.current.temp;
+    const temp = Math.round(data.current.temp);
     const wind = data.current.wind_speed;
     const humidity = data.current.humidity;
     const uvi = data.current.uvi;
