@@ -2,6 +2,7 @@ const APIKey = "954a094b824cd8beb88a22ff29fc4fc0";
 
 const searchBar = document.getElementById("searchbar");
 const submitButton = document.getElementById("submit");
+const pastSearchesEl = document.getElementById("past-searches");
 
 const cityTitleEl = document.querySelector('[data-attr="location"]');
 const todaysDateEl = document.querySelector('[data-attr="date"]');
@@ -38,7 +39,32 @@ function getCityCoordinates(event) {
         const latitude = data[0].lat;
         const longitude = data[0].lon;
         cityTitleEl.textContent = data[0].name;
+        // Add city to local storage
+        addPastSearch(data[0].name);
         getApiData(latitude, longitude);
+        // Show past searches at side
+        displayPastSearches();
+    });
+}
+
+// Gets coordinates of a past city when you search
+function getPastCityCoordinates(event) {
+    event.preventDefault();
+    const city = this.textContent;
+    const requestUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=' + city + '&appid=' + APIKey;
+    fetch(requestUrl)
+    .then(function (response) {
+        return response.json();
+    })
+    .then(function (data) {
+        const latitude = data[0].lat;
+        const longitude = data[0].lon;
+        cityTitleEl.textContent = data[0].name;
+        // Add city to local storage
+        addPastSearch(data[0].name);
+        getApiData(latitude, longitude);
+        // Show past searches at side
+        displayPastSearches();
     });
 }
 
@@ -66,7 +92,6 @@ function determineUVIntensity(uvi) {
 // Puts data for next 5 days into an array to populate the 5 forecast cards
 function parse5DayWeatherData(data) {
     let fiveDays = [];
-    console.log(data);
     for (let i=1; i <=5; i++) {
         const day = getDayFromUnix(data.daily[i].dt)
         const date = getDateFromUnix(data.daily[i].dt);
@@ -133,5 +158,48 @@ function getApiData(latitude, longitude) {
           update5DayForecast(data);
       });
 }
- 
+
+// Get past searches from local storage
+function getPastSearches() {
+    const searches = localStorage.getItem("searches");
+    if(!searches) {
+        return [];
+    }
+    const searchesParsed = JSON.parse(searches);
+    return searchesParsed;
+}
+
+// Add location to local storage
+function addPastSearch(query) {
+    const searches = getPastSearches();
+    if (searches.includes(query)){
+        return;
+    } else {
+        searches.push(query);
+    }
+    localStorage.setItem("searches", JSON.stringify(searches));
+}
+
+// Create new button for past searches
+function createButton(query) {
+    let button = document.createElement("button");
+    button.classList.add("btn");
+    button.classList.add("btn-secondary");
+    button.classList.add("m-1");
+    button.textContent = query;
+    button.addEventListener('click', getPastCityCoordinates);
+    return button;
+} 
+
+//Show past searches as buttons in sidebar
+function displayPastSearches() {
+    const searches = getPastSearches();
+    pastSearchesEl.textContent = "";
+    for (let i = 0; i < searches.length; i++) {
+        const pastSearch = createButton(searches[i]);
+        pastSearchesEl.appendChild(pastSearch);
+    }
+}
+
+displayPastSearches();
 submitButton.addEventListener("click", getCityCoordinates);

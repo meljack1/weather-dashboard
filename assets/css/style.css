@@ -14,7 +14,7 @@ h4 {
     font-size: 1.2rem;
 }
 
-.small-img {
+.centred-img {
     display: block;
     margin: auto;
 }
@@ -23,7 +23,7 @@ h4 {
     display: none;
 }
 
-.btn-primary {
+.btn {
     width: 100%;
 }
 
