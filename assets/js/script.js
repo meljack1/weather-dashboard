@@ -27,7 +27,6 @@ function getCityCoordinates(event) {
         return response.json();
     })
     .then(function (data) {
-        console.log(data);
         const latitude = data[0].lat;
         const longitude = data[0].lon;
         cityTitleEl.textContent = data[0].name;
@@ -57,7 +56,7 @@ function getTodayWeatherData(latitude, longitude) {
 // Gets 5 day weather forecast for coordinates obtained by getCityCoordinates
 
 function get5DayWeatherData(latitude, longitude) {
-    const requestUrl = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + latitude + '&lon=' + longitude + '&units=metric&appid=' + APIKey;
+    const requestUrl = 'http://api.openweathermap.org/data/2.5/onecall?lat=' + latitude + '&lon=' + longitude + '&units=metric&appid=' + APIKey;
   
     fetch(requestUrl)
       .then(function (response) {
@@ -65,11 +64,13 @@ function get5DayWeatherData(latitude, longitude) {
       })
       .then(function (data) {
           let fiveDays = [];
-          for (let i=0; i < 5; i++) {
-            const date = getDateFromUnix(data.list[i].dt);
-            const temp = data.list[i].main.temp;
-            const wind = data.list[i].wind.speed;
-            const humidity = data.list[i].main.humidity;
+          console.log(data);
+          for (let i=1; i <=5; i++) {
+            const date = getDateFromUnix(data.daily[i].dt);
+            console.log(data.daily[i].dt);
+            const temp = data.daily[i].temp.day;
+            const wind = data.daily[i].wind_speed;
+            const humidity = data.daily[i].humidity;
             fiveDays.push({date: date, temp: temp, wind: wind, humidity: humidity});
           }
           update5DayForecast(fiveDays)
