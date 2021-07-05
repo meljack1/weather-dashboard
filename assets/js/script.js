@@ -54,9 +54,9 @@ function getWeatherData(latitude, longitude) {
 
 function updateCurrentForecast(date, temp, wind, humidity, uv) {
     dateEl.textContent = `(${date})`;
-    temperatureTodayEl.textContent = temp;
-    windTodayEl.textContent = wind;
-    humidityTodayEl.textContent = humidity;
+    temperatureTodayEl.textContent = `${temp}°C`;
+    windTodayEl.textContent = `${wind} m/s`;
+    humidityTodayEl.textContent = `${humidity}%`;
     uvTodayEl.textContent = uv;
 
     console.log(date + temp + wind + humidity + uv)
@@ -66,4 +66,4 @@ function update5DayForecast() {
 
 }
  
-getCityCoordinates("Birmingham, UK");
+getCityCoordinates("Edinburgh, UK");
