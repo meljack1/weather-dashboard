@@ -4,23 +4,18 @@ const searchBar = document.getElementById("searchbar");
 const submitButton = document.getElementById("submit");
 
 const cityTitleEl = document.querySelector('[data-attr="location"]');
-const dateEl = document.querySelector('[data-attr="date"]');
+const todaysDateEl = document.querySelector('[data-attr="date"]');
 const temperatureTodayEl = document.querySelector('[data-attr="temperature-today"]');
 const windTodayEl = document.querySelector('[data-attr="wind-today"]');
 const humidityTodayEl = document.querySelector('[data-attr="humidity-today"]');
 const uvTodayEl = document.querySelector('[data-attr="uv-today"]');
 
-function getDate() {
-    let today = new Date();
-    const dd = String(today.getDate()).padStart(2, '0');
-    const mm = String(today.getMonth() + 1).padStart(2, '0'); 
-    const yyyy = today.getFullYear();
-
-    today = dd + '/' + mm + '/' + yyyy;
-    console.log(today);
-    return today;
+// Gets date from unix timestamp
+function getDateFromUnix(unix) {
+    let dateObject = new Date(unix * 1000);
+    let date = dateObject.toLocaleString().slice(0, 10);
+    return date;
 }
-
 
 // Gets city coordinates when you search
 function getCityCoordinates(event) {
@@ -36,12 +31,13 @@ function getCityCoordinates(event) {
         const latitude = data[0].lat;
         const longitude = data[0].lon;
         cityTitleEl.textContent = data[0].name;
-        getWeatherData(latitude, longitude);
+        getTodayWeatherData(latitude, longitude);
+        get5DayWeatherData(latitude, longitude);
     });
 }
 
 // Gets weather data for coordinates obtained from getCityCoordinates
-function getWeatherData(latitude, longitude) {
+function getTodayWeatherData(latitude, longitude) {
     const requestUrl = 'http://api.openweathermap.org/data/2.5/onecall?lat=' + latitude + '&lon=' + longitude + '&units=metric&appid=' + APIKey;
   
     fetch(requestUrl)
@@ -49,28 +45,56 @@ function getWeatherData(latitude, longitude) {
           return response.json();
       })
       .then(function (data) {
-          const date = getDate();
+          const date = getDateFromUnix(data.current.dt);
           const temp = data.current.temp;
           const wind = data.current.wind_speed;
           const humidity = data.current.humidity;
           const uv = data.current.uvi;
-          updateCurrentForecast(date, temp, wind, humidity, uv)
-          console.log(data);
+          updateCurrentForecast(date, temp, wind, humidity, uv);
+      });
+}
+
+// Gets 5 day weather forecast for coordinates obtained by getCityCoordinates
+
+function get5DayWeatherData(latitude, longitude) {
+    const requestUrl = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + latitude + '&lon=' + longitude + '&units=metric&appid=' + APIKey;
+  
+    fetch(requestUrl)
+      .then(function (response) {
+          return response.json();
+      })
+      .then(function (data) {
+          let fiveDays = [];
+          for (let i=0; i < 5; i++) {
+            const date = getDateFromUnix(data.list[i].dt);
+            const temp = data.list[i].main.temp;
+            const wind = data.list[i].wind.speed;
+            const humidity = data.list[i].main.humidity;
+            fiveDays.push({date: date, temp: temp, wind: wind, humidity: humidity});
+          }
+          update5DayForecast(fiveDays)
       });
 }
 
 function updateCurrentForecast(date, temp, wind, humidity, uv) {
-    dateEl.textContent = `(${date})`;
+    todaysDateEl.textContent = date;
     temperatureTodayEl.textContent = `${temp}°C`;
     windTodayEl.textContent = `${wind} m/s`;
     humidityTodayEl.textContent = `${humidity}%`;
     uvTodayEl.textContent = uv;
-
-    console.log(date + temp + wind + humidity + uv)
 }
 
-function update5DayForecast() {
-
+function update5DayForecast(fiveDays) {
+    for (let i=0; i < 5; i++) {
+        const dateEl = document.querySelector(`[data-attr="date-${i}"]`);
+        const temperatureEl = document.querySelector(`[data-attr="temperature-${i}"]`);
+        const windEl = document.querySelector(`[data-attr="wind-${i}"]`);
+        const humidityEl = document.querySelector(`[data-attr="humidity-${i}"]`);
+        dateEl.textContent = fiveDays[i].date;
+        temperatureEl.textContent = `${fiveDays[i].temp}°C`;
+        windEl.textContent = `${fiveDays[i].wind} m/s`;
+        humidityEl.textContent = `${fiveDays[i].humidity}%`; 
+    }
 }
  
 submitButton.addEventListener("click", getCityCoordinates);
