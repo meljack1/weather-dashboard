@@ -1,4 +1,8 @@
 const APIKey = "954a094b824cd8beb88a22ff29fc4fc0";
+
+const searchBar = document.getElementById("searchbar");
+const submitButton = document.getElementById("submit");
+
 const cityTitleEl = document.querySelector('[data-attr="location"]');
 const dateEl = document.querySelector('[data-attr="date"]');
 const temperatureTodayEl = document.querySelector('[data-attr="temperature-today"]');
@@ -17,8 +21,11 @@ function getDate() {
     return today;
 }
 
+
 // Gets city coordinates when you search
-function getCityCoordinates(city) {
+function getCityCoordinates(event) {
+    event.preventDefault();
+    const city = searchBar.value;
     const requestUrl = 'http://api.openweathermap.org/geo/1.0/direct?q=' + city + '&appid=' + APIKey;
     fetch(requestUrl)
     .then(function (response) {
@@ -66,4 +73,4 @@ function update5DayForecast() {
 
 }
  
-getCityCoordinates("Edinburgh, UK");
+submitButton.addEventListener("click", getCityCoordinates);
