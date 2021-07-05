@@ -13,8 +13,14 @@ const uvTodayEl = document.querySelector('[data-attr="uv-today"]');
 // Gets date from unix timestamp
 function getDateFromUnix(unix) {
     let dateObject = new Date(unix * 1000);
-    let date = dateObject.toLocaleString().slice(0, 10);
+    const date = dateObject.toLocaleString().slice(0, 10);
     return date;
+}
+
+function getDayFromUnix(unix) {
+    let dateObject = new Date(unix * 1000);
+    const day = dateObject.toLocaleString("en-US", {weekday: "long"});
+    return day;
 }
 
 // Gets city coordinates when you search
@@ -66,19 +72,19 @@ function get5DayWeatherData(latitude, longitude) {
           let fiveDays = [];
           console.log(data);
           for (let i=1; i <=5; i++) {
+            const day = getDayFromUnix(data.daily[i].dt)
             const date = getDateFromUnix(data.daily[i].dt);
-            console.log(data.daily[i].dt);
             const temp = data.daily[i].temp.day;
             const wind = data.daily[i].wind_speed;
             const humidity = data.daily[i].humidity;
-            fiveDays.push({date: date, temp: temp, wind: wind, humidity: humidity});
+            fiveDays.push({day: day, date: date, temp: temp, wind: wind, humidity: humidity});
           }
           update5DayForecast(fiveDays)
       });
 }
 
 function updateCurrentForecast(date, temp, wind, humidity, uv) {
-    todaysDateEl.textContent = date;
+    todaysDateEl.textContent = `(${date})`;
     temperatureTodayEl.textContent = `${temp}°C`;
     windTodayEl.textContent = `${wind} m/s`;
     humidityTodayEl.textContent = `${humidity}%`;
@@ -87,10 +93,12 @@ function updateCurrentForecast(date, temp, wind, humidity, uv) {
 
 function update5DayForecast(fiveDays) {
     for (let i=0; i < 5; i++) {
+        const dayEl = document.querySelector(`[data-attr="day-${i}"]`);
         const dateEl = document.querySelector(`[data-attr="date-${i}"]`);
         const temperatureEl = document.querySelector(`[data-attr="temperature-${i}"]`);
         const windEl = document.querySelector(`[data-attr="wind-${i}"]`);
         const humidityEl = document.querySelector(`[data-attr="humidity-${i}"]`);
+        dayEl.textContent = fiveDays[i].day;
         dateEl.textContent = fiveDays[i].date;
         temperatureEl.textContent = `${fiveDays[i].temp}°C`;
         windEl.textContent = `${fiveDays[i].wind} m/s`;
