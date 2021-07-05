@@ -44,6 +44,7 @@ function getCityCoordinates(event) {
         getApiData(latitude, longitude);
         // Show past searches at side
         displayPastSearches();
+        searchBar.value = "";
     });
 }
 
