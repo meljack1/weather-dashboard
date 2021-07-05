@@ -17,6 +17,7 @@ function getDateFromUnix(unix) {
     return date;
 }
 
+// Gets weekday from unix timestamp 
 function getDayFromUnix(unix) {
     let dateObject = new Date(unix * 1000);
     const day = dateObject.toLocaleString("en-US", {weekday: "long"});
@@ -36,13 +37,12 @@ function getCityCoordinates(event) {
         const latitude = data[0].lat;
         const longitude = data[0].lon;
         cityTitleEl.textContent = data[0].name;
-        getTodayWeatherData(latitude, longitude);
-        get5DayWeatherData(latitude, longitude);
+        getApiData(latitude, longitude);
     });
 }
 
 // Gets weather data for coordinates obtained from getCityCoordinates
-function getTodayWeatherData(latitude, longitude) {
+function getApiData(latitude, longitude) {
     const requestUrl = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + latitude + '&lon=' + longitude + '&units=metric&appid=' + APIKey;
   
     fetch(requestUrl)
@@ -50,54 +50,77 @@ function getTodayWeatherData(latitude, longitude) {
           return response.json();
       })
       .then(function (data) {
-          const date = getDateFromUnix(data.current.dt);
-          const temp = data.current.temp;
-          const wind = data.current.wind_speed;
-          const humidity = data.current.humidity;
-          const uv = data.current.uvi;
-          updateCurrentForecast(date, temp, wind, humidity, uv);
+          updateCurrentForecast(data);
+          update5DayForecast(data);
       });
 }
 
-// Gets 5 day weather forecast for coordinates obtained by getCityCoordinates
 
-function get5DayWeatherData(latitude, longitude) {
-    const requestUrl = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + latitude + '&lon=' + longitude + '&units=metric&appid=' + APIKey;
-  
-    fetch(requestUrl)
-      .then(function (response) {
-          return response.json();
-      })
-      .then(function (data) {
-          let fiveDays = [];
-          console.log(data);
-          for (let i=1; i <=5; i++) {
-            const day = getDayFromUnix(data.daily[i].dt)
-            const date = getDateFromUnix(data.daily[i].dt);
-            const temp = data.daily[i].temp.day;
-            const wind = data.daily[i].wind_speed;
-            const humidity = data.daily[i].humidity;
-            fiveDays.push({day: day, date: date, temp: temp, wind: wind, humidity: humidity});
-          }
-          update5DayForecast(fiveDays)
-      });
+// Puts data for next 5 days into an array to populate the 5 forecast cards
+function parse5DayWeatherData(data) {
+    let fiveDays = [];
+    console.log(data);
+    for (let i=1; i <=5; i++) {
+        const day = getDayFromUnix(data.daily[i].dt)
+        const date = getDateFromUnix(data.daily[i].dt);
+        const temp = data.daily[i].temp.day;
+        const wind = data.daily[i].wind_speed;
+        const humidity = data.daily[i].humidity;
+        fiveDays.push({day: day, date: date, temp: temp, wind: wind, humidity: humidity});
+    }
+    return fiveDays;
 }
 
-function updateCurrentForecast(date, temp, wind, humidity, uv) {
+// Determines how high the UV intensity is and returns a class name to add to UV span
+function determineUVIntensity(uvi) {
+    switch(true) {
+        case uvi <= 2: 
+            return "low-uv";
+            break;
+        case uvi <= 5: 
+            return "moderate-uv";
+            break;
+        case uvi <= 7:
+            return "high-uv";
+            break;
+        case uvi <= 10:
+            return "very-high-uv";
+            break;
+        case uvi > 10: 
+            return "extreme-uv";
+            break;
+    }
+}
+
+// Updates card with current forecast with data from API
+function updateCurrentForecast(data) {
+    const date = getDateFromUnix(data.current.dt);
+    const temp = data.current.temp;
+    const wind = data.current.wind_speed;
+    const humidity = data.current.humidity;
+    const uvi = data.current.uvi;
+    uvTodayEl.className = "";
+    const intensity = determineUVIntensity(uvi);
+
     todaysDateEl.textContent = `(${date})`;
     temperatureTodayEl.textContent = `${temp}°C`;
     windTodayEl.textContent = `${wind} m/s`;
     humidityTodayEl.textContent = `${humidity}%`;
-    uvTodayEl.textContent = uv;
+    uvTodayEl.classList.add("badge");
+    uvTodayEl.classList.add(`${intensity}`);
+    uvTodayEl.textContent = uvi; 
 }
 
-function update5DayForecast(fiveDays) {
+// Updates 5 day forecast cards with data from API
+function update5DayForecast(data) {
+    let fiveDays = parse5DayWeatherData(data);
     for (let i=0; i < 5; i++) {
         const dayEl = document.querySelector(`[data-attr="day-${i}"]`);
         const dateEl = document.querySelector(`[data-attr="date-${i}"]`);
         const temperatureEl = document.querySelector(`[data-attr="temperature-${i}"]`);
         const windEl = document.querySelector(`[data-attr="wind-${i}"]`);
         const humidityEl = document.querySelector(`[data-attr="humidity-${i}"]`);
+
         dayEl.textContent = fiveDays[i].day;
         dateEl.textContent = fiveDays[i].date;
         temperatureEl.textContent = `${fiveDays[i].temp}°C`;
