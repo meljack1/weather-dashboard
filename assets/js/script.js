@@ -21,7 +21,7 @@ function getDateFromUnix(unix) {
 function getCityCoordinates(event) {
     event.preventDefault();
     const city = searchBar.value;
-    const requestUrl = 'http://api.openweathermap.org/geo/1.0/direct?q=' + city + '&appid=' + APIKey;
+    const requestUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=' + city + '&appid=' + APIKey;
     fetch(requestUrl)
     .then(function (response) {
         return response.json();
@@ -37,7 +37,7 @@ function getCityCoordinates(event) {
 
 // Gets weather data for coordinates obtained from getCityCoordinates
 function getTodayWeatherData(latitude, longitude) {
-    const requestUrl = 'http://api.openweathermap.org/data/2.5/onecall?lat=' + latitude + '&lon=' + longitude + '&units=metric&appid=' + APIKey;
+    const requestUrl = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + latitude + '&lon=' + longitude + '&units=metric&appid=' + APIKey;
   
     fetch(requestUrl)
       .then(function (response) {
@@ -56,7 +56,7 @@ function getTodayWeatherData(latitude, longitude) {
 // Gets 5 day weather forecast for coordinates obtained by getCityCoordinates
 
 function get5DayWeatherData(latitude, longitude) {
-    const requestUrl = 'http://api.openweathermap.org/data/2.5/onecall?lat=' + latitude + '&lon=' + longitude + '&units=metric&appid=' + APIKey;
+    const requestUrl = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + latitude + '&lon=' + longitude + '&units=metric&appid=' + APIKey;
   
     fetch(requestUrl)
       .then(function (response) {
