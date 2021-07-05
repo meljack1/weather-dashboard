@@ -5,6 +5,7 @@ const submitButton = document.getElementById("submit");
 
 const cityTitleEl = document.querySelector('[data-attr="location"]');
 const todaysDateEl = document.querySelector('[data-attr="date"]');
+const weatherTodayEl = document.querySelector('[data-attr="weather-today"]')
 const temperatureTodayEl = document.querySelector('[data-attr="temperature-today"]');
 const windTodayEl = document.querySelector('[data-attr="wind-today"]');
 const humidityTodayEl = document.querySelector('[data-attr="humidity-today"]');
@@ -41,36 +42,6 @@ function getCityCoordinates(event) {
     });
 }
 
-// Gets weather data for coordinates obtained from getCityCoordinates
-function getApiData(latitude, longitude) {
-    const requestUrl = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + latitude + '&lon=' + longitude + '&units=metric&appid=' + APIKey;
-  
-    fetch(requestUrl)
-      .then(function (response) {
-          return response.json();
-      })
-      .then(function (data) {
-          updateCurrentForecast(data);
-          update5DayForecast(data);
-      });
-}
-
-
-// Puts data for next 5 days into an array to populate the 5 forecast cards
-function parse5DayWeatherData(data) {
-    let fiveDays = [];
-    console.log(data);
-    for (let i=1; i <=5; i++) {
-        const day = getDayFromUnix(data.daily[i].dt)
-        const date = getDateFromUnix(data.daily[i].dt);
-        const temp = data.daily[i].temp.day;
-        const wind = data.daily[i].wind_speed;
-        const humidity = data.daily[i].humidity;
-        fiveDays.push({day: day, date: date, temp: temp, wind: wind, humidity: humidity});
-    }
-    return fiveDays;
-}
-
 // Determines how high the UV intensity is and returns a class name to add to UV span
 function determineUVIntensity(uvi) {
     switch(true) {
@@ -92,9 +63,26 @@ function determineUVIntensity(uvi) {
     }
 }
 
+// Puts data for next 5 days into an array to populate the 5 forecast cards
+function parse5DayWeatherData(data) {
+    let fiveDays = [];
+    console.log(data);
+    for (let i=1; i <=5; i++) {
+        const day = getDayFromUnix(data.daily[i].dt)
+        const date = getDateFromUnix(data.daily[i].dt);
+        const icon = data.daily[i].weather[0].icon;
+        const temp = data.daily[i].temp.day;
+        const wind = data.daily[i].wind_speed;
+        const humidity = data.daily[i].humidity;
+        fiveDays.push({day: day, date: date, icon: icon,  temp: temp, wind: wind, humidity: humidity});
+    }
+    return fiveDays;
+}
+
 // Updates card with current forecast with data from API
 function updateCurrentForecast(data) {
     const date = getDateFromUnix(data.current.dt);
+    const icon = data.current.weather[0].icon;
     const temp = data.current.temp;
     const wind = data.current.wind_speed;
     const humidity = data.current.humidity;
@@ -103,6 +91,7 @@ function updateCurrentForecast(data) {
     const intensity = determineUVIntensity(uvi);
 
     todaysDateEl.textContent = `(${date})`;
+    weatherTodayEl.src = `./assets/images/${icon}.png`
     temperatureTodayEl.textContent = `${temp}°C`;
     windTodayEl.textContent = `${wind} m/s`;
     humidityTodayEl.textContent = `${humidity}%`;
@@ -117,16 +106,32 @@ function update5DayForecast(data) {
     for (let i=0; i < 5; i++) {
         const dayEl = document.querySelector(`[data-attr="day-${i}"]`);
         const dateEl = document.querySelector(`[data-attr="date-${i}"]`);
+        const weatherEl = document.querySelector(`[data-attr="weather-${i}"]`);
         const temperatureEl = document.querySelector(`[data-attr="temperature-${i}"]`);
         const windEl = document.querySelector(`[data-attr="wind-${i}"]`);
         const humidityEl = document.querySelector(`[data-attr="humidity-${i}"]`);
 
         dayEl.textContent = fiveDays[i].day;
         dateEl.textContent = fiveDays[i].date;
+        weatherEl.src = `./assets/images/${fiveDays[i].icon}.png`;
         temperatureEl.textContent = `${fiveDays[i].temp}°C`;
         windEl.textContent = `${fiveDays[i].wind} m/s`;
         humidityEl.textContent = `${fiveDays[i].humidity}%`; 
     }
+}
+
+// Gets weather data for coordinates obtained from getCityCoordinates
+function getApiData(latitude, longitude) {
+    const requestUrl = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + latitude + '&lon=' + longitude + '&units=metric&appid=' + APIKey;
+  
+    fetch(requestUrl)
+      .then(function (response) {
+          return response.json();
+      })
+      .then(function (data) {
+          updateCurrentForecast(data);
+          update5DayForecast(data);
+      });
 }
  
 submitButton.addEventListener("click", getCityCoordinates);
