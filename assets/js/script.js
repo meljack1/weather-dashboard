@@ -196,6 +196,6 @@ function displayPastSearches() {
     }
 }
 
-fetchCityCoordinates("Birmingham, UK");
+fetchCityCoordinates("Birmingham, GB");
 displayPastSearches();
 submitButton.addEventListener("click", getCityCoordinates);
