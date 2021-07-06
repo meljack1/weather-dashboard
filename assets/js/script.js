@@ -41,7 +41,7 @@ function fetchCityCoordinates(city) {
         const longitude = data[0].lon;
         cityTitleEl.textContent = `${data[0].name}, ${data[0].country}`;
         // Add city to local storage
-        addPastSearch(city);
+        addPastSearch(`${data[0].name}, ${data[0].country}`);
         getApiData(latitude, longitude);
         // Show past searches at side
         displayPastSearches();
