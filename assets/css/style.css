@@ -1,5 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Mada:wght@600&family=Montserrat&display=swap');
+
 body {
     text-align: left;
+    font-family: "Montserrat", sans-serif;
+}
+
+h1, h2, h3, h4 {
+    font-family: "Mada", sans-serif;
 }
 
 h1 {
