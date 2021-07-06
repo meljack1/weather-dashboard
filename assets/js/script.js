@@ -26,10 +26,7 @@ function getDayFromUnix(unix) {
     return day;
 }
 
-// Gets city coordinates when you search
-function getCityCoordinates(event) {
-    event.preventDefault();
-    const city = searchBar.value;
+function fetchCityCoordinates(city) {
     const requestUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=' + city + '&appid=' + APIKey;
     fetch(requestUrl)
     .then(function (response) {
@@ -48,25 +45,18 @@ function getCityCoordinates(event) {
     });
 }
 
-// Gets coordinates of a past city when you search
+// Gets city coordinates when you search
+function getCityCoordinates(event) {
+    event.preventDefault();
+    const city = searchBar.value;
+    fetchCityCoordinates(city);
+}
+
+// Gets coordinates of a past city when you click a grey button
 function getPastCityCoordinates(event) {
     event.preventDefault();
     const city = this.textContent;
-    const requestUrl = 'https://api.openweathermap.org/geo/1.0/direct?q=' + city + '&appid=' + APIKey;
-    fetch(requestUrl)
-    .then(function (response) {
-        return response.json();
-    })
-    .then(function (data) {
-        const latitude = data[0].lat;
-        const longitude = data[0].lon;
-        cityTitleEl.textContent = data[0].name;
-        // Add city to local storage
-        addPastSearch(data[0].name);
-        getApiData(latitude, longitude);
-        // Show past searches at side
-        displayPastSearches();
-    });
+    fetchCityCoordinates(city);
 }
 
 // Determines how high the UV intensity is and returns a class name to add to UV span
@@ -202,5 +192,6 @@ function displayPastSearches() {
     }
 }
 
+fetchCityCoordinates("Birmingham, UK");
 displayPastSearches();
 submitButton.addEventListener("click", getCityCoordinates);
