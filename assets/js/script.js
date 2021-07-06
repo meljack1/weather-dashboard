@@ -33,6 +33,10 @@ function fetchCityCoordinates(city) {
         return response.json();
     })
     .then(function (data) {
+        if (data.length == 0) {
+            alert("Sorry! No city with that name was found.")
+            return;
+        }
         const latitude = data[0].lat;
         const longitude = data[0].lon;
         cityTitleEl.textContent = data[0].name;
