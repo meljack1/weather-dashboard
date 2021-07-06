@@ -2,6 +2,7 @@ const APIKey = "954a094b824cd8beb88a22ff29fc4fc0";
 
 const searchBar = document.getElementById("searchbar");
 const submitButton = document.getElementById("submit");
+const clearButton = document.getElementById("clear-button");
 const pastSearchesEl = document.getElementById("past-searches");
 
 const cityTitleEl = document.querySelector('[data-attr="location"]');
@@ -196,6 +197,14 @@ function displayPastSearches() {
     }
 }
 
+// Clear past searches 
+function clearPastSearches() {
+    localStorage.clear();
+    displayPastSearches();
+}
+
+
 fetchCityCoordinates("Birmingham, GB");
 displayPastSearches();
 submitButton.addEventListener("click", getCityCoordinates);
+clearButton.addEventListener("click", clearPastSearches);
