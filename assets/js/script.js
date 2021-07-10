@@ -89,8 +89,8 @@ function determineUVIntensity(uvi) {
 function parse5DayWeatherData(data) {
     let fiveDays = [];
     for (let i=1; i <=5; i++) {
-        const day = getDayFromUnix(data.daily[i].dt)
-        const date = getDateFromUnix(data.daily[i].dt);
+        const day = getDayFromUnix(data.daily[i].dt + data["timezone_offset"]) 
+        const date = getDateFromUnix(data.daily[i].dt + + data["timezone_offset"]);
         const icon = data.daily[i].weather[0].icon;
         const temp = Math.round(data.daily[i].temp.day);
         const wind = data.daily[i].wind_speed;
@@ -102,7 +102,7 @@ function parse5DayWeatherData(data) {
 
 // Updates card with current forecast with data from API
 function updateCurrentForecast(data) {
-    const date = getDateFromUnix(data.current.dt);
+    const date = getDateFromUnix(data.current.dt + data["timezone_offset"]);
     const icon = data.current.weather[0].icon;
     const temp = Math.round(data.current.temp);
     const wind = data.current.wind_speed;
