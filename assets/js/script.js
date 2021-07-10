@@ -16,14 +16,14 @@ const uvTodayEl = document.querySelector('[data-attr="uv-today"]');
 // Gets date from unix timestamp
 function getDateFromUnix(unix) {
     let dateObject = new Date(unix * 1000);
-    const date = dateObject.toLocaleString().slice(0, 10);
+    const date = dateObject.toUTCString().slice(5, 16);
     return date;
 }
 
 // Gets weekday from unix timestamp 
 function getDayFromUnix(unix) {
     let dateObject = new Date(unix * 1000);
-    const day = dateObject.toLocaleString("en-US", {weekday: "long"});
+    const day = dateObject.toUTCString().slice(0, 3);
     return day;
 }
 
@@ -89,7 +89,7 @@ function determineUVIntensity(uvi) {
 function parse5DayWeatherData(data) {
     let fiveDays = [];
     for (let i=1; i <=5; i++) {
-        const day = getDayFromUnix(data.daily[i].dt + data["timezone_offset"]) 
+        const day = getDayFromUnix(data.daily[i].dt + data["timezone_offset"]); 
         const date = getDateFromUnix(data.daily[i].dt + + data["timezone_offset"]);
         const icon = data.daily[i].weather[0].icon;
         const temp = Math.round(data.daily[i].temp.day);
