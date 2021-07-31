@@ -12,4 +12,7 @@ https://meljack1.github.io/weather-dashboard/
 ## Credits
 Icons and API from [OpenWeatherApi](https://openweathermap.org/api)
 CSS Framework from [Bootstrap](https://getbootstrap.com/)
-  
+ 
+## Licence 
+
+This application is licenced with an [MIT Licence](./LICENSE)
